@@ -1,3 +1,4 @@
+use netflix;
 SELECT * FROM movies;
 SELECT title, genre FROM movies WHERE year>1990;
 SELECT * FROM movies WHERE category="Top 10";
@@ -12,3 +13,11 @@ DELETE FROM users WHERE user LIKE "m%";
 SELECT * FROM users;
 
 ALTER TABLE actors ADD image TEXT;
+
+DELETE FROM movies WHERE idMovies = 4;
+DELETE FROM movies WHERE idMovies = 5;
+DELETE FROM movies WHERE idMovies = 6;
+
+DELETE FROM users WHERE idUser = 4;
+DELETE FROM users WHERE idUser = 5;
+DELETE FROM users WHERE idUser = 6;
