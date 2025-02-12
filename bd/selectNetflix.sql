@@ -1,23 +1,15 @@
-use netflix;
-SELECT * FROM movies;
-SELECT title, genre FROM movies WHERE year>1990;
-SELECT * FROM movies WHERE category="Top 10";
-UPDATE movies SET year=1997 WHERE title="La vita è bella";
 
-SELECT * FROM actors;
-SELECT * FROM actors WHERE birthday BETWEEN "1950-01-01" AND "1960-12-31";
-SELECT name, lastname FROM actors WHERE country="Estados unidos";
+SELECT * FROM freedb_pair_netflix.movies;
+SELECT title, genre FROM freedb_pair_netflix.movies WHERE year>1990;
+SELECT * FROM freedb_pair_netflix.movies WHERE category="Top 10";
+UPDATE freedb_pair_netflix.movies SET year=1997 WHERE title="La vita è bella";
 
-SELECT * FROM users WHERE plan_details="Standard";
-DELETE FROM users WHERE user LIKE "m%";
-SELECT * FROM users;
+SELECT * FROM freedb_pair_netflix.Actors;
+SELECT * FROM freedb_pair_netflix.Actors WHERE birthday BETWEEN "1950-01-01" AND "1960-12-31";
+SELECT name, lastname FROM freedb_pair_netflix.Actors WHERE country="Estados unidos";
 
-ALTER TABLE actors ADD image TEXT;
+SELECT * FROM freedb_pair_netflix.Users WHERE plan_details="Standard";
+DELETE FROM freedb_pair_netflix.Users WHERE user LIKE "m%";
+SELECT * FROM freedb_pair_netflix.Users;
 
-DELETE FROM movies WHERE idMovies = 4;
-DELETE FROM movies WHERE idMovies = 5;
-DELETE FROM movies WHERE idMovies = 6;
-
-DELETE FROM users WHERE idUser = 4;
-DELETE FROM users WHERE idUser = 5;
-DELETE FROM users WHERE idUser = 6;
+ALTER TABLE freedb_pair_netflix.Actors ADD image TEXT;
