@@ -40,8 +40,8 @@ Por favor marca a continuación los ejercicios que hayáis terminado:
 
 **4.6 Endpoints:**
 
-- [ ] 1. Pide todas las películas. En el front
-- [ ] 2. Pide todas las películas. En el back
+- [x] 1. Pide todas las películas. En el front
+- [x] 2. Pide todas las películas. En el back
 
 **4.7 ExpressJS con MySQL:**
 
