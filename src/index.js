@@ -21,9 +21,12 @@ async function connectDB() {
 
 server.get("/movies", async (req, res)=>{
   try {
+    const { genre, order } = req.query;
     const connection = await connectDB();
     const sqlSelect = "SELECT * FROM movies";
-    const [result] = await connection.query(sqlSelect);
+    const ordenamiento = order ? `ORDER BY ${order} ASC` : "";
+    const sqlSelectGenre = `SELECT * FROM movies WHERE genre = ? ${ordenamiento}`;
+    const [result] = await connection.query(sqlSelectGenre, [genre]);
     connection.end();
 
     if(result.length === 0) {
@@ -53,6 +56,9 @@ server.listen(serverPort, () => {
 
 const urlServerStatic = './src/public-react'; //vamos a buscar desde la carpeta raiz
 server.use(express.static(urlServerStatic));
+
+const urlServerStaticImages = './src/public-movies-images'; 
+server.use(express.static(urlServerStaticImages));
 
 /*
 ENDPOINTS:
