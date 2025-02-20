@@ -6,6 +6,7 @@ const mysql = require('mysql2/promise');
 const server = express();
 server.use(cors());
 server.use(express.json());
+server.set('view engine', 'ejs');
 
 async function connectDB() {
   const conex = await mysql.createConnection({
@@ -21,14 +22,14 @@ async function connectDB() {
 
 server.get("/movies", async (req, res)=>{
   try {
-    const { genre, order } = req.query;
+    const { genre, sort } = req.query;
     const connection = await connectDB();
     const sqlSelect = "SELECT * FROM movies";
-    const ordenamiento = order ? `ORDER BY ${order} ASC` : "";
+    const ordenamiento = sort ? `ORDER BY ${sort} ASC` : "";
     const sqlSelectGenre = `SELECT * FROM movies WHERE genre = ? ${ordenamiento}`;
     const [result] = await connection.query(sqlSelectGenre, [genre]);
     connection.end();
-
+    console.log(req.query);
     if(result.length === 0) {
       res.status(404).json({
         success:false,
@@ -46,6 +47,18 @@ server.get("/movies", async (req, res)=>{
       message: error,
     });
   }
+});
+
+server.get('/movie/:movieId', async (req, res) => {
+  const {movieId} = req.params;
+  console.log(movieId);
+  const connection = await connectDB();
+  const foundMovie = "SELECT * FROM movies WHERE idMovies = ?";
+  const [result] = await connection.query(foundMovie, [movieId]);
+  console.log(result)
+  connection.end();
+  res.render('movie', {movie: result[0]})
+  
 })
 
 // init express aplication
@@ -59,6 +72,8 @@ server.use(express.static(urlServerStatic));
 
 const urlServerStaticImages = './src/public-movies-images'; 
 server.use(express.static(urlServerStaticImages));
+
+server.use(express.static("./css"))
 
 /*
 ENDPOINTS:
