@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2/promise');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 // create and config server
 const server = express();
@@ -59,7 +61,22 @@ server.get('/movie/:movieId', async (req, res) => {
   connection.end();
   res.render('movie', {movie: result[0]})
   
-})
+});
+
+server.post('/sign-up', async (req, res)=>{
+  const connection = await connectDB();
+  const {email, pass} = req.body;
+  const selectEmail = 'SELECT email FROM Users WHERE email = ?';
+  const [emailResult] = await connection.query(selectEmail, [email]);
+  if(emailResult.length === 0){
+      const passwordHashed = await bcrypt.hash(pass, 10);
+      const insertUser = 'INSERT INTO Users (email, password) VALUES (?,?)';
+      const [result] = await connection.query(insertUser, [email, passwordHashed]);
+      res.status(201).json({ success:true, userId: result.insertId })
+  }else{
+    res.status(200).json({ success:false, message: 'Usuario ya existe' })
+  }
+});
 
 // init express aplication
 const serverPort = 4000;
