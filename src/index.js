@@ -65,11 +65,12 @@ server.get('/movie/:movieId', async (req, res) => {
 
 server.post('/sign-up', async (req, res)=>{
   const connection = await connectDB();
-  const {email, pass} = req.body;
+  const {email, password} = req.body;
+  console.log(req.body)
   const selectEmail = 'SELECT email FROM Users WHERE email = ?';
   const [emailResult] = await connection.query(selectEmail, [email]);
   if(emailResult.length === 0){
-      const passwordHashed = await bcrypt.hash(pass, 10);
+      const passwordHashed = await bcrypt.hash(password, 10);
       const insertUser = 'INSERT INTO Users (email, password) VALUES (?,?)';
       const [result] = await connection.query(insertUser, [email, passwordHashed]);
       res.status(201).json({ success:true, userId: result.insertId })
