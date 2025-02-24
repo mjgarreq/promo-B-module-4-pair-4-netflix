@@ -31,7 +31,7 @@ server.get("/movies", async (req, res)=>{
     const sqlSelectGenre = `SELECT * FROM movies WHERE genre = ? ${ordenamiento}`;
     const [result] = await connection.query(sqlSelectGenre, [genre]);
     connection.end();
-    console.log(req.query);
+    
     if(result.length === 0) {
       res.status(404).json({
         success:false,
@@ -51,6 +51,31 @@ server.get("/movies", async (req, res)=>{
   }
 });
 
+server.post("/login", async(req, res) => {
+  const connection = await connectDB();
+  const {email, password} = req.body;
+  const selectUser = "SELECT * FROM Users WHERE email = ? AND password = ?";
+  const [results] = await connection.query(selectUser, [email, password]);
+  
+  if(results.length !==0) {
+    res.status(200).json(
+      {
+        success: true,
+        userId: results[0].idUser,
+      }
+    )
+    
+  } else {
+    res.status(400).json(
+      {
+        success: false,
+        errorMessage: "Usuaria/o no encontrada/o"
+      }
+    )
+  }
+});
+
+
 server.get('/movie/:movieId', async (req, res) => {
   const {movieId} = req.params;
   console.log(movieId);
@@ -66,18 +91,27 @@ server.get('/movie/:movieId', async (req, res) => {
 server.post('/sign-up', async (req, res)=>{
   const connection = await connectDB();
   const {email, password} = req.body;
-  console.log(req.body)
+  
   const selectEmail = 'SELECT email FROM Users WHERE email = ?';
   const [emailResult] = await connection.query(selectEmail, [email]);
   if(emailResult.length === 0){
       const passwordHashed = await bcrypt.hash(password, 10);
       const insertUser = 'INSERT INTO Users (email, password) VALUES (?,?)';
       const [result] = await connection.query(insertUser, [email, passwordHashed]);
+      
       res.status(201).json({ success:true, userId: result.insertId })
   }else{
     res.status(200).json({ success:false, message: 'Usuario ya existe' })
   }
 });
+
+server.get("/user/profile", async(req, res) => {
+  const connection = await connectDB();
+  const {userId} = req.headers;
+  const sql = "SELECT email, name, password FROM Users WHERE idUser = ?"
+  const [result] = await connection.query(sql, [userId]);
+  console.log(result)
+})
 
 // init express aplication
 const serverPort = 4000;
