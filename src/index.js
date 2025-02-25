@@ -107,10 +107,27 @@ server.post('/sign-up', async (req, res)=>{
 
 server.get("/user/profile", async(req, res) => {
   const connection = await connectDB();
-  const {userId} = req.headers;
+  const {userid} = req.headers;
   const sql = "SELECT email, name, password FROM Users WHERE idUser = ?"
-  const [result] = await connection.query(sql, [userId]);
-  console.log(result)
+  const [result] = await connection.query(sql, [userid]);
+  if(result){
+    res.status(200).json({ success:true, result: result })
+  }else{
+    res.status(400).json({ success:false, message: 'Usuario no existe' })
+  }
+})
+
+server.post("/user/profile", async(req, res) => {
+  const connection = await connectDB();
+  const { name, email, password } = req.body;
+  const {userid} = req.headers;
+  const sql = "UPDATE Users SET name=?, email=?, password=? WHERE idUser = ?";
+  const [result] = await connection.query(sql, [name, email, password,userid]);
+  if(result){
+    res.status(200).json({ success:true })
+  }else{
+    res.status(400).json({ success:false, message: 'Error' })
+  }
 })
 
 // init express aplication
